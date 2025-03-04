@@ -18,6 +18,9 @@ const App = () => {
     const newBadFeedBack = bad + 1;
     setBad(newBadFeedBack);
   };
+  const total = good + neutral + bad;
+  const average = (good * 1 + bad * -1) / total;
+  const positiveFeedback = (good / total) * 100;
   return (
     <div>
       <h1>Give Feedback</h1>
@@ -28,6 +31,9 @@ const App = () => {
       <p>good: {good}</p>
       <p>neutral: {neutral}</p>
       <p>bad: {bad}</p>
+      <p>all: {isNaN(total) ? "" : total}</p>
+      <p>average: {isNaN(average) ? "" : average}</p>
+      <p>positive: {isNaN(positiveFeedback) ? "" : positiveFeedback + " %"} </p>
     </div>
   );
 };

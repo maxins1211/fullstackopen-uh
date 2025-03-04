@@ -6,9 +6,10 @@ const Button = ({ onClick, text }) => {
 
 const StatisticLine = ({ text, value }) => {
   return (
-    <p>
-      {text}: {value}
-    </p>
+    <tr>
+      <td>{text}</td>
+      <td>{value}</td>
+    </tr>
   );
 };
 const Statistics = ({ good, neutral, bad }) => {
@@ -16,17 +17,21 @@ const Statistics = ({ good, neutral, bad }) => {
   const average = (good * 1 + bad * -1) / total;
   const positiveFeedback = (good / total) * 100;
   const output = (
-    <>
-      <StatisticLine text="good" value={good} />
-      <StatisticLine text="neutral" value={neutral} />
-      <StatisticLine text="bad" value={bad} />
-      <StatisticLine text="all" value={isNaN(total) ? "" : total} />
-      <StatisticLine text="average" value={isNaN(average) ? "" : average} />
-      <StatisticLine
-        text="positive"
-        value={isNaN(positiveFeedback) ? "" : positiveFeedback + " %"}
-      />
-    </>
+    <table>
+      <thead></thead>
+      <tbody>
+        <StatisticLine text="good" value={good} />
+        <StatisticLine text="neutral" value={neutral} />
+        <StatisticLine text="bad" value={bad} />
+        <StatisticLine text="all" value={isNaN(total) ? "" : total} />
+        <StatisticLine text="average" value={isNaN(average) ? "" : average} />
+        <StatisticLine
+          text="positive"
+          value={isNaN(positiveFeedback) ? "" : positiveFeedback + " %"}
+        />
+      </tbody>
+      <tfoot></tfoot>
+    </table>
   );
   return (
     <>

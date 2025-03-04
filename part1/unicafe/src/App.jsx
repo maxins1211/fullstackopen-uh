@@ -4,15 +4,20 @@ const Statistics = ({ good, neutral, bad }) => {
   const total = good + neutral + bad;
   const average = (good * 1 + bad * -1) / total;
   const positiveFeedback = (good / total) * 100;
-  return (
+  const output = (
     <>
-      <h1>Statistics</h1>
       <p>good: {good}</p>
       <p>neutral: {neutral}</p>
       <p>bad: {bad}</p>
       <p>all: {isNaN(total) ? "" : total}</p>
       <p>average: {isNaN(average) ? "" : average}</p>
       <p>positive: {isNaN(positiveFeedback) ? "" : positiveFeedback + " %"} </p>
+    </>
+  );
+  return (
+    <>
+      <h1>Statistics</h1>
+      {total === 0 ? <p>No feedback given</p> : output}
     </>
   );
 };

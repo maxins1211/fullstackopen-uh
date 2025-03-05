@@ -39,7 +39,7 @@ Each part has its own directory with the exercises completed for that section.
 ## Progress Tracker
 
 - [x] Part 0
-- [ ] Part 1
+- [x] Part 1
 - [ ] Part 2
 - [ ] Part 3
 - [ ] Part 4

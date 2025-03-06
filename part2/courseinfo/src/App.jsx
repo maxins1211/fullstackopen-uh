@@ -31,15 +31,14 @@ const Content = (props) => {
 
 const Total = (props) => {
   const { parts } = props.course;
-  let sum = 0;
-  for (const part of parts) {
-    sum += part.exercises;
-  }
+  const total = parts
+    .map((part) => part.exercises)
+    .reduce((accumulator, currentValue) => accumulator + currentValue);
   return (
     <>
       <p>
         {" "}
-        <b>total of {sum} exercises</b>
+        <b>total of {total} exercises</b>
       </p>
     </>
   );

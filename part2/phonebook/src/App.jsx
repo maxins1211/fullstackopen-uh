@@ -1,8 +1,7 @@
 import { useState } from "react";
 
 const App = () => {
-  const personArr = [{ name: "Arto Hellas" }];
-  const [persons, setPersons] = useState(personArr);
+  const [persons, setPersons] = useState([{ name: "Arto Hellas" }]);
   const [newName, setNewName] = useState("");
   const handleNameChange = (e) => {
     setNewName(e.target.value);
@@ -10,9 +9,13 @@ const App = () => {
 
   const handleAddPerson = (e) => {
     e.preventDefault();
-    const newPersonObject = { name: newName };
-    setPersons(personArr.concat(newPersonObject));
-    setNewName("");
+    if (persons.find((person) => person.name === newName)) {
+      alert(`${newName} is already added to phonebook`);
+    } else {
+      const newPersonObject = { name: newName };
+      setPersons(persons.concat(newPersonObject));
+      setNewName("");
+    }
   };
 
   return (

@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import PersonForm from "./components/PersonForm";
 import Filter from "./components/Filter";
 import Persons from "./components/Persons";
-import axios from "axios";
 import personService from "./services/personService";
 
 const App = () => {
@@ -36,8 +35,27 @@ const App = () => {
   };
   const handleAddPerson = (e) => {
     e.preventDefault();
-    if (persons.find((person) => person.name === newName)) {
-      alert(`${newName} is already added to phonebook`);
+    const findPerson = persons.find((person) => person.name === newName);
+    if (findPerson) {
+      if (
+        window.confirm(
+          `${newName} is already added to phonebook, replace the old number with a new one?`
+        )
+      ) {
+        const id = findPerson.id;
+        const changedPerson = { ...findPerson, number: newPhone };
+        personService.updatePerson(id, changedPerson).then((updatedPerson) => {
+          const updatedPersons = persons.map((person) =>
+            person.id === id ? updatedPerson : person
+          );
+          setPersons(updatedPersons);
+          setFilteredPersons(
+            updatedPersons.filter((person) =>
+              person.name.toLowerCase().includes(filterName.toLowerCase())
+            )
+          );
+        });
+      }
     } else {
       const newPersonObject = { name: newName, number: newPhone };
       personService.createPerson(newPersonObject).then((person) => {
@@ -50,6 +68,23 @@ const App = () => {
         );
         setNewName("");
         setNewPhone("");
+      });
+    }
+  };
+  const handleDelete = (id) => () => {
+    if (
+      window.confirm(
+        "Delete " + persons.find((person) => person.id === id).name
+      )
+    ) {
+      personService.deletePerson(id).then(() => {
+        const updatedPersons = persons.filter((person) => person.id !== id);
+        setPersons(updatedPersons);
+        setFilteredPersons(
+          updatedPersons.filter((person) =>
+            person.name.toLowerCase().includes(filterName.toLowerCase())
+          )
+        );
       });
     }
   };
@@ -70,7 +105,10 @@ const App = () => {
         newPhone={newPhone}
       ></PersonForm>
       <h2>Numbers</h2>
-      <Persons filteredPersons={filteredPersons}></Persons>
+      <Persons
+        filteredPersons={filteredPersons}
+        handleDelete={handleDelete}
+      ></Persons>
     </div>
   );
 };

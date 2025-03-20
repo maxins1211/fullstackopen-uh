@@ -3,11 +3,13 @@ import { useEffect, useState } from "react";
 import FilteredCountry from "./components/FilteredCountry";
 import SpecificCountry from "./components/SpecificCountry";
 
+const api_key = import.meta.env.VITE_SOME_KEY;
 function App() {
   const [userInput, setUserInput] = useState("");
   const [countries, setCountries] = useState([]);
   const [filteredCountries, setFilteredCountries] = useState([]);
   const [specificCountry, setSpecificCountry] = useState();
+  const [weather, setWeather] = useState();
   useEffect(() => {
     axios
       .get("https://studies.cs.helsinki.fi/restcountries/api/all")
@@ -19,6 +21,24 @@ function App() {
       });
   }, []);
 
+  useEffect(() => {
+    if (specificCountry) {
+      axios
+        .get(
+          `https://api.openweathermap.org/data/2.5/weather?q=${specificCountry.name}&appid=${api_key}`
+        )
+        .then((response) => {
+          const { wind, main, weather } = response.data;
+          console.log(response.data);
+          const newWeather = {
+            temp: (main.temp - 273.15).toFixed(2),
+            windSpeed: wind.speed,
+            iconURL: `https://openweathermap.org/img/wn/${weather[0].icon}@2x.png`,
+          };
+          setWeather(newWeather);
+        });
+    }
+  }, [specificCountry]);
   const handleChange = (e) => {
     const newUserInput = e.target.value;
 
@@ -64,7 +84,7 @@ function App() {
         filteredCountries={filteredCountries}
         handleShow={handleShow}
       />
-      <SpecificCountry specificCountry={specificCountry} />
+      <SpecificCountry specificCountry={specificCountry} weather={weather} />
     </>
   );
 }

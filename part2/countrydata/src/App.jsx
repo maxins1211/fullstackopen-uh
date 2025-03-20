@@ -8,7 +8,6 @@ function App() {
   const [countries, setCountries] = useState([]);
   const [filteredCountries, setFilteredCountries] = useState([]);
   const [specificCountry, setSpecificCountry] = useState();
-  console.log(countries);
   useEffect(() => {
     axios
       .get("https://studies.cs.helsinki.fi/restcountries/api/all")
@@ -51,12 +50,20 @@ function App() {
         setSpecificCountry(countryInfomation);
       });
   };
+  const handleShow = (country) => () => {
+    getSpecificCountry(country);
+    setFilteredCountries([]);
+    setUserInput("");
+  };
 
   return (
     <>
       <label>Find country</label>
       <input value={userInput} onChange={handleChange} />
-      <FilteredCountry filteredCountries={filteredCountries} />
+      <FilteredCountry
+        filteredCountries={filteredCountries}
+        handleShow={handleShow}
+      />
       <SpecificCountry specificCountry={specificCountry} />
     </>
   );

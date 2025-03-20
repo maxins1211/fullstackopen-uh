@@ -1,5 +1,14 @@
 const Notification = ({ message }) => {
-  return <> {message && <div className="message">{message}</div>}</>;
+  return (
+    <>
+      {" "}
+      {message && (
+        <div className={message.isError ? "error" : "message"}>
+          {message.content}
+        </div>
+      )}
+    </>
+  );
 };
 
 export default Notification;

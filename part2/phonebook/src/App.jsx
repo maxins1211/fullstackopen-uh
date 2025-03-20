@@ -11,8 +11,7 @@ const App = () => {
   const [newPhone, setNewPhone] = useState("");
   const [filterName, setFilterName] = useState("");
   const [filteredPersons, setFilteredPersons] = useState([]);
-  const [message, setMessage] = useState();
-
+  const [message, setMessage] = useState(null);
   useEffect(() => {
     personService.getAll().then((persons) => {
       setPersons(persons);
@@ -46,19 +45,39 @@ const App = () => {
       ) {
         const id = findPerson.id;
         const changedPerson = { ...findPerson, number: newPhone };
-        personService.updatePerson(id, changedPerson).then((updatedPerson) => {
-          const updatedPersons = persons.map((person) =>
-            person.id === id ? updatedPerson : person
-          );
-          setPersons(updatedPersons);
-          setFilteredPersons(
-            updatedPersons.filter((person) =>
-              person.name.toLowerCase().includes(filterName.toLowerCase())
-            )
-          );
-          setMessage("Updated phone number for " + changedPerson.name);
-          setTimeout(() => setMessage(), 5000);
-        });
+        personService
+          .updatePerson(id, changedPerson)
+          .then((updatedPerson) => {
+            const updatedPersons = persons.map((person) =>
+              person.id === id ? updatedPerson : person
+            );
+            setPersons(updatedPersons);
+            setFilteredPersons(
+              updatedPersons.filter((person) =>
+                person.name.toLowerCase().includes(filterName.toLowerCase())
+              )
+            );
+            const newMessage = {
+              content: "Updated phone number for " + changedPerson.name,
+              isError: false,
+            };
+            console.log(newMessage);
+            setMessage(newMessage);
+            setTimeout(() => setMessage(null), 5000);
+          })
+          .catch((error) => {
+            if (error.status === 404) {
+              const newMessage = {
+                content:
+                  "Information of " +
+                  changedPerson.name +
+                  " has already been removed from server",
+                isError: true,
+              };
+              setMessage(newMessage);
+              setTimeout(() => setMessage(null), 5000);
+            }
+          });
       }
     } else {
       const newPersonObject = { name: newName, number: newPhone };
@@ -72,8 +91,12 @@ const App = () => {
         );
         setNewName("");
         setNewPhone("");
-        setMessage("Added " + newPersonObject.name);
-        setTimeout(() => setMessage(), 5000);
+        const newMessage = {
+          content: "Added " + newPersonObject.name,
+          isError: false,
+        };
+        setMessage(newMessage);
+        setTimeout(() => setMessage(null), 5000);
       });
     }
   };

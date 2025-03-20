@@ -3,6 +3,7 @@ import PersonForm from "./components/PersonForm";
 import Filter from "./components/Filter";
 import Persons from "./components/Persons";
 import personService from "./services/personService";
+import Notification from "./components/Notification";
 
 const App = () => {
   const [persons, setPersons] = useState([]);
@@ -10,6 +11,7 @@ const App = () => {
   const [newPhone, setNewPhone] = useState("");
   const [filterName, setFilterName] = useState("");
   const [filteredPersons, setFilteredPersons] = useState([]);
+  const [message, setMessage] = useState();
 
   useEffect(() => {
     personService.getAll().then((persons) => {
@@ -54,6 +56,8 @@ const App = () => {
               person.name.toLowerCase().includes(filterName.toLowerCase())
             )
           );
+          setMessage("Updated phone number for " + changedPerson.name);
+          setTimeout(() => setMessage(), 5000);
         });
       }
     } else {
@@ -68,6 +72,8 @@ const App = () => {
         );
         setNewName("");
         setNewPhone("");
+        setMessage("Added " + newPersonObject.name);
+        setTimeout(() => setMessage(), 5000);
       });
     }
   };
@@ -92,6 +98,7 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
+      <Notification message={message} />
       <Filter
         handleFilterChange={handleFilterChange}
         filterName={filterName}

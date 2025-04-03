@@ -25,6 +25,7 @@ let phonebook = [
   },
 ];
 
+app.use(express.static("dist"));
 app.use(express.json());
 
 morgan.token("req-body", (req) => JSON.stringify(req.body));

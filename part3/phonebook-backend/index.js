@@ -1,6 +1,6 @@
 const express = require("express");
 const app = express();
-
+const morgan = require("morgan");
 const PORT = 3001;
 let phonebook = [
   {
@@ -26,6 +26,7 @@ let phonebook = [
 ];
 
 app.use(express.json());
+app.use(morgan("tiny"));
 
 app.get("/", (req, res) => {
   res.send("<h1>Hello from backend</h1>");

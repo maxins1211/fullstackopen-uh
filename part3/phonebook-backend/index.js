@@ -25,6 +25,8 @@ let phonebook = [
   },
 ];
 
+app.use(express.json());
+
 app.get("/", (req, res) => {
   res.send("<h1>Hello from backend</h1>");
 });
@@ -51,6 +53,14 @@ app.delete("/api/persons/:id", (req, res) => {
   const id = req.params.id;
   phonebook = phonebook.filter((person) => person.id !== id);
   res.status(204).end();
+});
+
+app.post("/api/persons", (req, res) => {
+  const id = Math.floor(Math.random() * 100);
+  req.body.id = id;
+  console.log(req.body);
+  phonebook.push(req.body);
+  res.json(req.body);
 });
 
 app.listen(PORT, () => {

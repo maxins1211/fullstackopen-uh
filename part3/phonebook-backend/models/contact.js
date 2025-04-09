@@ -1,6 +1,7 @@
 const mongoose = require("mongoose");
 
 mongoose.set("strictQuery", false);
+mongoose.set("runValidators", true);
 const url = process.env.MONGODB_URI;
 mongoose
   .connect(url)
@@ -11,7 +12,10 @@ mongoose
     console.log("error connecting to MongoDB:", err.message);
   });
 
-const contactSchema = new mongoose.Schema({ name: String, number: String });
+const contactSchema = new mongoose.Schema({
+  name: { type: String, minLength: 3 },
+  number: String,
+});
 contactSchema.set("toJSON", {
   transform: (document, returnedObject) => {
     returnedObject.id = returnedObject._id.toString();

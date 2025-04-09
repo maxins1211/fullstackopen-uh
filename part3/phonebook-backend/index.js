@@ -61,18 +61,17 @@ app.delete("/api/persons/:id", (req, res) => {
 });
 
 app.post("/api/persons", (req, res) => {
-  const id = Math.floor(Math.random() * 100);
-  const newPerson = req.body;
-  if (!newPerson.name || !newPerson.number) {
+  const body = req.body;
+
+  if (!body.name || !body.number) {
     return res.status(404).json({ error: "Name or number is missing" });
-  } else {
-    if (phonebook.find((person) => person.name === newPerson.name)) {
-      return res.status(404).json({ error: "name must be unique" });
-    }
-    newPerson.id = id;
-    phonebook.push(newPerson);
-    return res.json(newPerson);
   }
+
+  const newContact = new Contact({ name: body.name, number: body.number });
+
+  newContact.save().then((savedContact) => {
+    res.json(savedContact);
+  });
 });
 
 app.listen(PORT, () => {

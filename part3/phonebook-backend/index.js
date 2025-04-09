@@ -1,7 +1,9 @@
+require("dotenv").config();
+const Contact = require("./models/contact");
 const express = require("express");
 const app = express();
 const morgan = require("morgan");
-const PORT = 3001;
+const PORT = process.env.PORT;
 let phonebook = [
   {
     id: "1",
@@ -32,12 +34,10 @@ morgan.token("req-body", (req) => JSON.stringify(req.body));
 
 app.use(morgan(":method :url :status - :response-time ms :req-body"));
 
-app.get("/", (req, res) => {
-  res.send("<h1>Hello from backend</h1>");
-});
-
 app.get("/api/persons", (req, res) => {
-  res.json(phonebook);
+  Contact.find({}).then((contacts) => {
+    res.json(contacts);
+  });
 });
 
 app.get("/info", (req, res) => {

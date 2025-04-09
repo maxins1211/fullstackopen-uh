@@ -81,23 +81,33 @@ const App = () => {
       }
     } else {
       const newPersonObject = { name: newName, number: newPhone };
-      personService.createPerson(newPersonObject).then((person) => {
-        const updatedPersons = persons.concat(person);
-        setPersons(updatedPersons);
-        setFilteredPersons(
-          updatedPersons.filter((person) =>
-            person.name.toLowerCase().includes(filterName.toLowerCase())
-          )
-        );
-        setNewName("");
-        setNewPhone("");
-        const newMessage = {
-          content: "Added " + newPersonObject.name,
-          isError: false,
-        };
-        setMessage(newMessage);
-        setTimeout(() => setMessage(null), 5000);
-      });
+      personService
+        .createPerson(newPersonObject)
+        .then((person) => {
+          const updatedPersons = persons.concat(person);
+          setPersons(updatedPersons);
+          setFilteredPersons(
+            updatedPersons.filter((person) =>
+              person.name.toLowerCase().includes(filterName.toLowerCase())
+            )
+          );
+          setNewName("");
+          setNewPhone("");
+          const newMessage = {
+            content: "Added " + newPersonObject.name,
+            isError: false,
+          };
+          setMessage(newMessage);
+          setTimeout(() => setMessage(null), 5000);
+        })
+        .catch((err) => {
+          console.log(err.response.data.error);
+          const newMessage = {
+            content: err.response.data.error,
+            isError: true,
+          };
+          setMessage(newMessage);
+        });
     }
   };
   const handleDelete = (id) => () => {

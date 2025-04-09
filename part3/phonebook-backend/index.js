@@ -65,7 +65,6 @@ app.delete("/api/persons/:id", (req, res) => {
     res.status(204).end()
   );
 });
-
 app.post("/api/persons", (req, res) => {
   const body = req.body;
 
@@ -80,6 +79,23 @@ app.post("/api/persons", (req, res) => {
   });
 });
 
+app.put("/api/persons/:id", (req, res, next) => {
+  const { name, number } = req.body;
+
+  Contact.findById(req.params.id)
+    .then((contact) => {
+      if (!contact) {
+        return res.status(404).end();
+      }
+
+      contact.number = number;
+      contact.name = name;
+      return contact.save().then((updatedContact) => {
+        res.json(updatedContact);
+      });
+    })
+    .catch((err) => next(err));
+});
 const errorHandler = (error, request, response, next) => {
   console.log(error.message);
 

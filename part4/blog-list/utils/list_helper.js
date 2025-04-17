@@ -5,7 +5,18 @@ const totalLikes = (blogs) => {
         .map((blog) => blog.likes)
         .reduce((accumulator, currentValue) => accumulator + currentValue);
 };
+
+const favoriteBlog = (blogs) => {
+    if (blogs.length === 0) {
+        return 0;
+    }
+    const likesArr = blogs.map(blog => blog.likes);
+    const hightestLike = Math.max(...likesArr);
+    const blogWithHighestLike = blogs.find(blog => blog.likes === hightestLike);
+    return blogWithHighestLike;
+}
 module.exports = {
     dummy,
-    totalLikes
+    totalLikes,
+    favoriteBlog
 };

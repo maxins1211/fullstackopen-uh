@@ -15,8 +15,36 @@ const favoriteBlog = (blogs) => {
     const blogWithHighestLike = blogs.find(blog => blog.likes === hightestLike);
     return blogWithHighestLike;
 }
+
+const mostBlogs = (blogs) => {
+    if (blogs.length === 0) {
+        return 0;
+    }
+    const authorArr = blogs.map(blog => blog.author);
+    let uniqueAuthorArr = [...authorArr];
+    for (let i = uniqueAuthorArr.length - 1; i > 0; i--) {
+        if (uniqueAuthorArr[i] === uniqueAuthorArr[i - 1]) {
+            uniqueAuthorArr.splice(i, 1);
+        }
+    }
+    uniqueAuthorArr = uniqueAuthorArr.map(author => {
+        return { author, blogs: 0 }
+    })
+    for (let i = 0; i < authorArr.length; i++) {
+        for (let j = 0; j < uniqueAuthorArr.length; j++) {
+            if (authorArr[i] === uniqueAuthorArr[j].author) {
+                uniqueAuthorArr[j].blogs++;
+            }
+        }
+    }
+    const highestNumOfBlog = Math.max(...uniqueAuthorArr.map(author => author.blogs))
+    return uniqueAuthorArr.find(author => author.blogs === highestNumOfBlog)
+
+}
+
 module.exports = {
     dummy,
     totalLikes,
-    favoriteBlog
+    favoriteBlog,
+    mostBlogs
 };

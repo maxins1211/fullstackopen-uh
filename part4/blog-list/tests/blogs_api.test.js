@@ -42,9 +42,12 @@ test("a valid blog can be added", async () => {
         .expect("Content-Type", /application\/json/);
 
     const blogsAfterAdding = await helper.blogsInDb();
-    assert.strictEqual(blogsBeforeAdding.length + 1, blogsAfterAdding.length)
-    const addedBlog = blogsAfterAdding[blogsAfterAdding.length - 1]
-    assert(addedBlog.title.includes("Go To Statement Considered Harmful 2"), true)
+    assert.strictEqual(blogsBeforeAdding.length + 1, blogsAfterAdding.length);
+    const addedBlog = blogsAfterAdding[blogsAfterAdding.length - 1];
+    assert(
+        addedBlog.title.includes("Go To Statement Considered Harmful 2"),
+        true
+    );
 });
 
 test("when the likes property is missing, it will default to the value 0", async () => {
@@ -61,8 +64,8 @@ test("when the likes property is missing, it will default to the value 0", async
 
     const blogsAfterAdding = await helper.blogsInDb();
     const addedBlog = blogsAfterAdding[blogsAfterAdding.length - 1];
-    assert.strictEqual(addedBlog.likes, 0)
-})
+    assert.strictEqual(addedBlog.likes, 0);
+});
 
 test("blog without title or url is not added", async () => {
     const newBlogWithoutTitle = {
@@ -84,17 +87,27 @@ test("blog without title or url is not added", async () => {
         .send(newBlogWithoutUrl)
         .expect(400)
         .expect("Content-Type", /application\/json/);
-
-})
+});
 
 test.only("Delete a single blog post", async () => {
     const blogsBeforeDelete = await helper.blogsInDb();
     const blogId = blogsBeforeDelete[0].id;
-    await api.delete(`/api/blogs/${blogId}`).expect(204)
+    await api.delete(`/api/blogs/${blogId}`).expect(204);
 
     const blogsAfterDetele = await helper.blogsInDb();
-    assert.strictEqual(blogsBeforeDelete.length - 1, blogsAfterDetele.length)
-})
+    assert.strictEqual(blogsBeforeDelete.length - 1, blogsAfterDetele.length);
+});
+
+test.only("Update like for a blog", async () => {
+    const updateLike = { likes: 10 };
+    const blogsBeforeUpdate = await helper.blogsInDb();
+    const blogId = blogsBeforeUpdate[0].id;
+    await api
+        .put(`/api/blogs/${blogId}`)
+        .send(updateLike)
+        .expect(200)
+        .expect("Content-Type", /application\/json/);
+});
 after(async () => {
     await moogoose.connection.close();
 });

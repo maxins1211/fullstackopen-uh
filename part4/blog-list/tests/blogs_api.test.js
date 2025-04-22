@@ -86,6 +86,15 @@ test("blog without title or url is not added", async () => {
         .expect("Content-Type", /application\/json/);
 
 })
+
+test.only("Delete a single blog post", async () => {
+    const blogsBeforeDelete = await helper.blogsInDb();
+    const blogId = blogsBeforeDelete[0].id;
+    await api.delete(`/api/blogs/${blogId}`).expect(204)
+
+    const blogsAfterDetele = await helper.blogsInDb();
+    assert.strictEqual(blogsBeforeDelete.length - 1, blogsAfterDetele.length)
+})
 after(async () => {
     await moogoose.connection.close();
 });

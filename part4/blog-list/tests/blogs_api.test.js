@@ -13,7 +13,7 @@ beforeEach(async () => {
     await Blog.insertMany(helper.initialBlogs);
 });
 
-test.only("all blogs are returned as JSON", async () => {
+test("all blogs are returned as JSON", async () => {
     await api
         .get("/api/blogs")
         .expect(200)
@@ -22,12 +22,12 @@ test.only("all blogs are returned as JSON", async () => {
     assert.strictEqual(blogs.length, helper.initialBlogs.length);
 });
 
-test.only("unique identifier property of blog post is named id", async () => {
+test("unique identifier property of blog post is named id", async () => {
     const blogs = await helper.blogsInDb();
     assert(blogs[0].hasOwnProperty("id"), true);
 });
 
-test.only("a valid blog can be added", async () => {
+test("a valid blog can be added", async () => {
     const blogsBeforeAdding = await helper.blogsInDb();
     const newBlog = {
         title: "Go To Statement Considered Harmful 2",
@@ -47,7 +47,7 @@ test.only("a valid blog can be added", async () => {
     assert(addedBlog.title.includes("Go To Statement Considered Harmful 2"), true)
 });
 
-test.only("when the likes property is missing, it will default to the value 0", async () => {
+test("when the likes property is missing, it will default to the value 0", async () => {
     const newBlog = {
         title: "Go To Statement Considered Harmful 2",
         author: "Edsger W. Dijkstra",
@@ -62,6 +62,29 @@ test.only("when the likes property is missing, it will default to the value 0", 
     const blogsAfterAdding = await helper.blogsInDb();
     const addedBlog = blogsAfterAdding[blogsAfterAdding.length - 1];
     assert.strictEqual(addedBlog.likes, 0)
+})
+
+test("blog without title or url is not added", async () => {
+    const newBlogWithoutTitle = {
+        author: "Edsger W. Dijkstra",
+        url: "https://homepages.cwi.nl/~storm/teaching/reader/Dijkstra68.pdf",
+    };
+    await api
+        .post("/api/blogs")
+        .send(newBlogWithoutTitle)
+        .expect(400)
+        .expect("Content-Type", /application\/json/);
+
+    const newBlogWithoutUrl = {
+        title: "Go To Statement Considered Harmful 2",
+        author: "Edsger W. Dijkstra",
+    };
+    await api
+        .post("/api/blogs")
+        .send(newBlogWithoutUrl)
+        .expect(400)
+        .expect("Content-Type", /application\/json/);
+
 })
 after(async () => {
     await moogoose.connection.close();

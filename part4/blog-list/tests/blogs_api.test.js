@@ -46,6 +46,23 @@ test.only("a valid blog can be added", async () => {
     const addedBlog = blogsAfterAdding[blogsAfterAdding.length - 1]
     assert(addedBlog.title.includes("Go To Statement Considered Harmful 2"), true)
 });
+
+test.only("when the likes property is missing, it will default to the value 0", async () => {
+    const newBlog = {
+        title: "Go To Statement Considered Harmful 2",
+        author: "Edsger W. Dijkstra",
+        url: "https://homepages.cwi.nl/~storm/teaching/reader/Dijkstra68.pdf",
+    };
+    await api
+        .post("/api/blogs")
+        .send(newBlog)
+        .expect(201)
+        .expect("Content-Type", /application\/json/);
+
+    const blogsAfterAdding = await helper.blogsInDb();
+    const addedBlog = blogsAfterAdding[blogsAfterAdding.length - 1];
+    assert.strictEqual(addedBlog.likes, 0)
+})
 after(async () => {
     await moogoose.connection.close();
 });

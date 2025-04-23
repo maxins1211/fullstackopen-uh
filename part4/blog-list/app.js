@@ -19,7 +19,7 @@ mongoose
     });
 morgan.token("req-body", (req) => JSON.stringify(req.body));
 app.use(express.json());
-app.use(morgan(":method :url :status - :response-time ms :req-body"));
+app.use(morgan(":method :url status: :status - :response-time ms :req-body"));
 app.use("/api/blogs", blogsRouter);
 app.use("/api/users", usersRouter)
 app.use(middleware.unknownEndpoint)

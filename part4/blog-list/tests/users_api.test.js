@@ -63,5 +63,7 @@ describe("when there is initially one user in db", () => {
             .send(newUser)
             .expect(400)
             .expect("Content-Type", /application\/json/);
+        const usersAtEnd = await helper.usersInDb();
+        assert.strictEqual(usersAtStart.length, usersAtEnd.length)
     })
 });

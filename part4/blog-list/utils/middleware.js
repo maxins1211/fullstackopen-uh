@@ -34,8 +34,10 @@ const tokenExtractor = (request, response, next) => {
     const authorization = request.get('Authorization')
     if (authorization && authorization.includes('Bearer')) {
         request.token = authorization.split(' ')[1];
+        next();
+    } else {
+        response.status(401).json({ error: "Request without Authorization" })
     }
-    next();
 }
 
 const userExtractor = async (request, response, next) => {

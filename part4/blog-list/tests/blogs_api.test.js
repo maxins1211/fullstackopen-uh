@@ -3,13 +3,20 @@ const { test, after, beforeEach } = require("node:test");
 const supertest = require("supertest");
 const assert = require("node:assert");
 const Blog = require("../models/blog");
+const User = require("../models/user")
 const helper = require("./test_helper");
 const app = require("../app");
+const jwt = require("jsonwebtoken")
 
 const api = supertest(app);
 
 beforeEach(async () => {
     await Blog.deleteMany({});
+    await User.deleteMany({});
+    const user = new User({ username: "testuser", passwordHash: "hashedpassword" });
+    await user.save();
+    const userForToken = { username: user.username, id: user._id };
+    token = jwt.sign(userForToken, process.env.SECRET);
     await Blog.insertMany(helper.initialBlogs);
 });
 
@@ -27,7 +34,7 @@ test("unique identifier property of blog post is named id", async () => {
     assert(blogs[0].hasOwnProperty("id"), true);
 });
 
-test("a valid blog can be added", async () => {
+test.only("a valid blog can be added", async () => {
     const blogsBeforeAdding = await helper.blogsInDb();
     const newBlog = {
         title: "Go To Statement Considered Harmful 2",
@@ -37,6 +44,7 @@ test("a valid blog can be added", async () => {
     };
     await api
         .post("/api/blogs")
+        .set("Authorization", `Bearer ${token}`)
         .send(newBlog)
         .expect(201)
         .expect("Content-Type", /application\/json/);
@@ -49,6 +57,23 @@ test("a valid blog can be added", async () => {
         true
     );
 });
+
+test.only("adding blog without token will be denied", async () => {
+    const blogsBeforeAdding = await helper.blogsInDb();
+    const newBlog = {
+        title: "Go To Statement Considered Harmful 2",
+        author: "Edsger W. Dijkstra",
+        url: "https://homepages.cwi.nl/~storm/teaching/reader/Dijkstra68.pdf",
+        likes: 6,
+    };
+    await api
+        .post("/api/blogs")
+        .send(newBlog)
+        .expect(401)
+
+    const blogsAfterAdding = await helper.blogsInDb();
+    assert.strictEqual(blogsBeforeAdding.length, blogsAfterAdding.length);
+})
 
 test("when the likes property is missing, it will default to the value 0", async () => {
     const newBlog = {
@@ -89,7 +114,7 @@ test("blog without title or url is not added", async () => {
         .expect("Content-Type", /application\/json/);
 });
 
-test.only("Delete a single blog post", async () => {
+test("Delete a single blog post", async () => {
     const blogsBeforeDelete = await helper.blogsInDb();
     const blogId = blogsBeforeDelete[0].id;
     await api.delete(`/api/blogs/${blogId}`).expect(204);
@@ -98,7 +123,7 @@ test.only("Delete a single blog post", async () => {
     assert.strictEqual(blogsBeforeDelete.length - 1, blogsAfterDetele.length);
 });
 
-test.only("Update like for a blog", async () => {
+test("Update like for a blog", async () => {
     const updateLike = { likes: 10 };
     const blogsBeforeUpdate = await helper.blogsInDb();
     const blogId = blogsBeforeUpdate[0].id;

@@ -13,7 +13,6 @@ const App = () => {
   const [password, setPassword] = useState("");
   const [user, setUser] = useState(null);
   const [message, setMessage] = useState(null);
-  const [newBlog, setNewBlog] = useState({ title: "", author: "", url: "" });
   useEffect(() => {
     if (user) {
       blogService.getAll().then((blogs) => setBlogs(blogs));
@@ -49,16 +48,14 @@ const App = () => {
     setUser(null);
   };
 
-  const handleCreateBlog = async (e) => {
-    e.preventDefault();
-    const addedBlog = await blogService.addBlog(newBlog);
+  const addBlog = async (blogObject) => {
+    const addedBlog = await blogService.addBlog(blogObject);
     const newBlogs = blogs.concat(addedBlog);
     setBlogs(newBlogs);
     setMessage({
-      content: `a new blog ${newBlog.title} added`,
+      content: `a new blog ${blogObject.title} added`,
       isError: false,
     });
-    setNewBlog({ title: "", author: "", url: "" });
     setTimeout(() => setMessage(null), 3000);
   };
 
@@ -85,11 +82,7 @@ const App = () => {
           </div>
           <br />
           <Togglable buttonLabel="new blog">
-            <CreateBlogForm
-              handleCreateBlog={handleCreateBlog}
-              newBlog={newBlog}
-              setNewBlog={setNewBlog}
-            />
+            <CreateBlogForm createBlog={addBlog} />
           </Togglable>
 
           {blogs.map((blog) => (

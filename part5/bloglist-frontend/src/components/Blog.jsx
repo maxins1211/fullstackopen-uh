@@ -1,11 +1,17 @@
 import { useState } from "react";
 
-const Blog = ({ blog, increaseLike }) => {
+const Blog = ({ blog, increaseLike, removeBlog, currentUser }) => {
   const [visible, setVisible] = useState(false);
   const changeVisibility = () => {
     setVisible(!visible);
   };
-
+  const blogStyle = {
+    paddingTop: 10,
+    paddingLeft: 2,
+    border: "solid",
+    borderWidth: 1,
+    marginBottom: 5,
+  };
   const addLike = () => {
     increaseLike(blog.id, {
       user: blog.user.id,
@@ -15,12 +21,11 @@ const Blog = ({ blog, increaseLike }) => {
       likes: ++blog.likes,
     });
   };
-  const blogStyle = {
-    paddingTop: 10,
-    paddingLeft: 2,
-    border: "solid",
-    borderWidth: 1,
-    marginBottom: 5,
+
+  const deleteBlog = () => {
+    if (window.confirm(`Remove blog ${blog.title} by ${blog.author}`)) {
+      removeBlog(blog.id);
+    }
   };
   return (
     <div style={blogStyle}>
@@ -37,7 +42,10 @@ const Blog = ({ blog, increaseLike }) => {
         <div>
           {blog.url} <br />
           likes {blog.likes} <button onClick={addLike}>like</button> <br />
-          {blog.user.name}
+          {blog.user.name} <br />
+          {currentUser.name === blog.user.name && (
+            <button onClick={deleteBlog}>remove</button>
+          )}
         </div>
       )}
     </div>

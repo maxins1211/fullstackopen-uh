@@ -1,10 +1,10 @@
-import React, { useState } from "react";
+import React, { useState } from 'react'
 
 const Togglable = (props) => {
-  const [visible, setVisible] = useState(false);
+  const [visible, setVisible] = useState(false)
   const toggleVisibility = () => {
-    setVisible(!visible);
-  };
+    setVisible(!visible)
+  }
   return (
     <div>
       {!visible && (
@@ -17,7 +17,7 @@ const Togglable = (props) => {
         </>
       )}
     </div>
-  );
-};
+  )
+}
 
-export default Togglable;
+export default Togglable

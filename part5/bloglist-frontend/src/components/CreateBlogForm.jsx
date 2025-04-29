@@ -1,13 +1,14 @@
-import React from "react";
-import { useState } from "react";
+import React from 'react'
+import { useState } from 'react'
+import PropTypes from 'prop-types'
 const CreateBlogForm = (props) => {
-  const { createBlog } = props;
-  const [newBlog, setNewBlog] = useState({ title: "", author: "", url: "" });
+  const { createBlog } = props
+  const [newBlog, setNewBlog] = useState({ title: '', author: '', url: '' })
   const addBlog = (e) => {
-    e.preventDefault();
-    createBlog(newBlog);
-    setNewBlog({ title: "", author: "", url: "" });
-  };
+    e.preventDefault()
+    createBlog(newBlog)
+    setNewBlog({ title: '', author: '', url: '' })
+  }
   return (
     <div>
       <h2>Create new</h2>
@@ -17,7 +18,7 @@ const CreateBlogForm = (props) => {
           type="text"
           value={newBlog.title}
           onChange={(e) => {
-            setNewBlog({ ...newBlog, title: e.target.value });
+            setNewBlog({ ...newBlog, title: e.target.value })
           }}
         />
         <br />
@@ -26,7 +27,7 @@ const CreateBlogForm = (props) => {
           type="text"
           value={newBlog.author}
           onChange={(e) => {
-            setNewBlog({ ...newBlog, author: e.target.value });
+            setNewBlog({ ...newBlog, author: e.target.value })
           }}
         />
         <br />
@@ -35,14 +36,17 @@ const CreateBlogForm = (props) => {
           type="text"
           value={newBlog.url}
           onChange={(e) => {
-            setNewBlog({ ...newBlog, url: e.target.value });
+            setNewBlog({ ...newBlog, url: e.target.value })
           }}
         />
         <br />
         <button type="submit">create</button>
       </form>
     </div>
-  );
-};
+  )
+}
 
-export default CreateBlogForm;
+CreateBlogForm.prototype = {
+  createBlog: PropTypes.func.isRequired,
+}
+export default CreateBlogForm

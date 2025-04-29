@@ -1,9 +1,19 @@
 import { useState } from "react";
 
-const Blog = ({ blog }) => {
+const Blog = ({ blog, increaseLike }) => {
   const [visible, setVisible] = useState(false);
   const changeVisibility = () => {
     setVisible(!visible);
+  };
+
+  const addLike = () => {
+    increaseLike(blog.id, {
+      user: blog.user.id,
+      author: blog.author,
+      title: blog.title,
+      url: blog.url,
+      likes: ++blog.likes,
+    });
   };
   const blogStyle = {
     paddingTop: 10,
@@ -26,7 +36,7 @@ const Blog = ({ blog }) => {
       {visible && (
         <div>
           {blog.url} <br />
-          likes {blog.likes} <button>like</button> <br />
+          likes {blog.likes} <button onClick={addLike}>like</button> <br />
           {blog.user.name}
         </div>
       )}

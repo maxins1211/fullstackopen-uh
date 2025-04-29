@@ -58,7 +58,6 @@ const App = () => {
     });
     setTimeout(() => setMessage(null), 3000);
   };
-
   return (
     <div>
       {!user ? <h2>Log in to application</h2> : <h2>blogs</h2>}

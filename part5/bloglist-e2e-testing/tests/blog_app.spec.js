@@ -28,7 +28,7 @@ describe('Blog app', () => {
             await page.getByTestId('username').fill('blogtest')
             await page.getByTestId('password').fill('12345')
             await page.getByRole('button', { name: 'login' }).click()
-            const messageDiv = await page.locator('.message')
+            const messageDiv = page.locator('.message')
             await expect(messageDiv).toContainText('Login successfully')
         })
 
@@ -36,10 +36,25 @@ describe('Blog app', () => {
             await page.getByTestId('username').fill('blogtest')
             await page.getByTestId('password').fill('wrong')
             await page.getByRole('button', { name: 'login' }).click()
-            const messageDiv = await page.locator('.error')
+            const messageDiv = page.locator('.error')
             await expect(messageDiv).toContainText('Wrong username or password')
         })
     })
 
-
+    describe('When logged in', () => {
+        beforeEach(async ({ page }) => {
+            await page.getByTestId('username').fill('blogtest')
+            await page.getByTestId('password').fill('12345')
+            await page.getByRole('button', { name: 'login' }).click()
+        })
+        test('a new blog can be created', async ({ page }) => {
+            await page.getByRole('button', { name: 'new blog' }).click()
+            await page.getByTestId('blog-title').fill('not a real title')
+            await page.getByTestId('blog-author').fill('not a real author')
+            await page.getByTestId('blog-url').fill('not a real url')
+            await page.getByRole('button', { name: 'create' }).click()
+            const messageDiv = page.locator('.message')
+            await expect(messageDiv).toContainText('a new blog not a real title added')
+        })
+    })
 })

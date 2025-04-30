@@ -41,7 +41,7 @@ describe('Blog app', () => {
         })
     })
 
-    describe('When logged in', () => {
+    describe.only('When logged in', () => {
         beforeEach(async ({ page }) => {
             await page.getByTestId('username').fill('blogtest')
             await page.getByTestId('password').fill('12345')
@@ -55,6 +55,24 @@ describe('Blog app', () => {
             await page.getByRole('button', { name: 'create' }).click()
             const messageDiv = page.locator('.message')
             await expect(messageDiv).toContainText('a new blog not a real title added')
+        })
+
+        describe('When there is a blog in blog list', () => {
+            beforeEach(async ({ page }) => {
+                await page.getByRole('button', { name: 'new blog' }).click()
+                await page.getByTestId('blog-title').fill('not a real title')
+                await page.getByTestId('blog-author').fill('not a real author')
+                await page.getByTestId('blog-url').fill('not a real url')
+                await page.getByRole('button', { name: 'create' }).click()
+            })
+
+            test('a blog can be liked', async ({ page }) => {
+                await page.getByRole('button', { name: 'view' }).click()
+                const numOfLike = page.getByTestId('number-of-like')
+                await expect(numOfLike).toContainText('likes 0')
+                await page.getByRole('button', { name: 'like' }).click()
+                await expect(numOfLike).toContainText('likes 1')
+            })
         })
     })
 })

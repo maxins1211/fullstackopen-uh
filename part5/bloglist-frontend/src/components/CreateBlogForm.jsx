@@ -17,6 +17,7 @@ const CreateBlogForm = (props) => {
         <input
           type="text"
           value={newBlog.title}
+          data-testid="blog-title"
           onChange={(e) => {
             setNewBlog({ ...newBlog, title: e.target.value })
           }}
@@ -26,6 +27,7 @@ const CreateBlogForm = (props) => {
         <input
           type="text"
           value={newBlog.author}
+          data-testid="blog-author"
           onChange={(e) => {
             setNewBlog({ ...newBlog, author: e.target.value })
           }}
@@ -35,6 +37,7 @@ const CreateBlogForm = (props) => {
         <input
           type="text"
           value={newBlog.url}
+          data-testid="blog-url"
           onChange={(e) => {
             setNewBlog({ ...newBlog, url: e.target.value })
           }}

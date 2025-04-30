@@ -12,6 +12,13 @@ describe('Blog app', () => {
                 password: '12345'
             }
         })
+        await request.post('http://localhost:3003/api/users', {
+            data: {
+                name: 'lam test 2',
+                username: 'blogtest2',
+                password: '12345'
+            }
+        })
         await page.goto('http://localhost:5173')
     })
     test('displays the login form by default', async ({ page }) => {
@@ -75,7 +82,6 @@ describe('Blog app', () => {
             })
 
             test('a blog can be removed', async ({ page }) => {
-                await page.pause()
                 await page.getByRole('button', { name: 'view' }).click()
                 const removeButton = page.getByRole('button', { name: 'remove' })
                 page.once('dialog', async (dialog) => {
@@ -85,6 +91,15 @@ describe('Blog app', () => {
                 })
                 await removeButton.click()
                 await expect(page.getByText('not a real title not a real author ')).not.toBeVisible()
+            })
+
+            test('only user who added the blog sees the remove button', async ({ page }) => {
+                await page.getByRole('button', { name: 'log out' }).click()
+                await page.getByTestId('username').fill('blogtest2')
+                await page.getByTestId('password').fill('12345')
+                await page.getByRole('button', { name: 'login' }).click()
+                await page.getByRole('button', { name: "view" }).click()
+                await expect(page.getByRole('button', { name: "remove" })).not.toBeVisible()
             })
         })
     })

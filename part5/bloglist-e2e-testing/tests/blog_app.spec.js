@@ -57,7 +57,7 @@ describe('Blog app', () => {
             await expect(messageDiv).toContainText('a new blog not a real title added')
         })
 
-        describe('When there is a blog in blog list', () => {
+        describe('When a blog is created', () => {
             beforeEach(async ({ page }) => {
                 await page.getByRole('button', { name: 'new blog' }).click()
                 await page.getByTestId('blog-title').fill('not a real title')
@@ -72,6 +72,19 @@ describe('Blog app', () => {
                 await expect(numOfLike).toContainText('likes 0')
                 await page.getByRole('button', { name: 'like' }).click()
                 await expect(numOfLike).toContainText('likes 1')
+            })
+
+            test('a blog can be removed', async ({ page }) => {
+                await page.pause()
+                await page.getByRole('button', { name: 'view' }).click()
+                const removeButton = page.getByRole('button', { name: 'remove' })
+                page.once('dialog', async (dialog) => {
+                    expect(dialog.type()).toBe('confirm')
+                    expect(dialog.message()).toContain('Remove blog not a real title by not a real author')
+                    await dialog.accept()
+                })
+                await removeButton.click()
+                await expect(page.getByText('not a real title not a real author ')).not.toBeVisible()
             })
         })
     })

@@ -71,6 +71,7 @@ describe('Blog app', () => {
                 await page.getByTestId('blog-author').fill('not a real author')
                 await page.getByTestId('blog-url').fill('not a real url')
                 await page.getByRole('button', { name: 'create' }).click()
+                await page.getByText('not a real title not a real author').waitFor()
             })
 
             test('a blog can be liked', async ({ page }) => {
@@ -100,6 +101,30 @@ describe('Blog app', () => {
                 await page.getByRole('button', { name: 'login' }).click()
                 await page.getByRole('button', { name: "view" }).click()
                 await expect(page.getByRole('button', { name: "remove" })).not.toBeVisible()
+            })
+
+            test.only('blogs are arranged in the order according to the likes, most like first', async ({ page }) => {
+                await page.getByTestId('blog-title').fill('not a real title 2')
+                await page.getByTestId('blog-author').fill('not a real author 2')
+                await page.getByTestId('blog-url').fill('not a real url 2')
+                await page.getByRole('button', { name: 'create' }).click()
+
+                await page.getByText('not a real title 2 not a real author 2').waitFor()
+                const initialBlogs = await page.locator('.blog').allTextContents();
+                expect(initialBlogs[0]).toContain('not a real title not a real author');
+                expect(initialBlogs[1]).toContain('not a real title 2 not a real author 2');
+                const firstBlogElement = page.getByText('not a real title not a real author').locator('..')
+                await firstBlogElement.getByRole('button', { name: "view" }).click()
+                await expect(firstBlogElement.getByTestId('number-of-like')).toContainText('likes 0')
+                const secondBlogElement = page.getByText('not a real title 2 not a real author 2').locator('..')
+                await secondBlogElement.getByRole('button', { name: "view" }).click()
+                await expect(secondBlogElement.getByTestId('number-of-like')).toContainText('likes 0')
+                await secondBlogElement.getByRole('button', { name: 'like' }).click()
+                await expect(secondBlogElement.getByTestId('number-of-like')).toContainText('likes 1');
+                await page.waitForTimeout(700);
+                const afterChangeBlogs = await page.locator('.blog').allTextContents();
+                expect(afterChangeBlogs[0]).toContain('not a real title 2 not a real author 2');
+                expect(afterChangeBlogs[1]).toContain('not a real title not a real author');
             })
         })
     })

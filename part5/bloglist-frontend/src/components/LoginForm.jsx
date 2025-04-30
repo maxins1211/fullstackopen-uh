@@ -8,6 +8,7 @@ const LoginForm = (props) => {
         <label>username</label>{' '}
         <input
           type="text"
+          data-testid="username"
           value={username}
           onChange={(e) => setUsername(e.target.value)}
         />{' '}
@@ -16,7 +17,7 @@ const LoginForm = (props) => {
         <input
           type="password"
           name=""
-          id=""
+          data-testid="password"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
         />{' '}

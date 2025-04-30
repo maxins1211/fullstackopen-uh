@@ -22,9 +22,12 @@ morgan.token("req-body", (req) => JSON.stringify(req.body));
 app.use(express.json());
 app.use(morgan(":method :url status: :status - :response-time ms :req-body"));
 app.use("/api/login", loginRouter)
-app.use(middleware.tokenExtractor)
-app.use("/api/blogs", blogsRouter);
+app.use("/api/blogs", middleware.tokenExtractor, blogsRouter);
 app.use("/api/users", usersRouter)
+if (process.env.NODE_ENV === 'test') {
+    const testingRouter = require('./controllers/testing.route')
+    app.use('/api/testing', testingRouter)
+}
 app.use(middleware.unknownEndpoint)
 app.use(middleware.errorHandler)
 

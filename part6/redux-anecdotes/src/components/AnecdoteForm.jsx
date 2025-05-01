@@ -1,7 +1,6 @@
 import React from "react";
 import { useDispatch } from "react-redux";
-import { addAnecdote } from "../reducers/anecdoteReducer";
-import { getId } from "../reducers/anecdoteReducer";
+import { createAnecdoteInDb } from "../reducers/anecdoteReducer";
 import anecdotesService from "../services/anecdotes";
 import {
   createAnecdoteNoti,
@@ -14,13 +13,7 @@ const AnecdoteForm = () => {
     e.preventDefault();
     const content = e.target.content.value;
     e.target.content.value = "";
-    const newAnecdote = {
-      content,
-      id: getId(),
-      votes: 0,
-    };
-    const addedAnecdote = await anecdotesService.addAnecdote(newAnecdote);
-    dispatch(addAnecdote(addedAnecdote));
+    dispatch(createAnecdoteInDb(content));
     dispatch(createAnecdoteNoti(content));
     setTimeout(() => dispatch(removeNoti()), 5000);
   };

@@ -10,4 +10,10 @@ const addAnecdote = async (anecdoteObj) => {
     const response = await axios.post(baseUrl, anecdoteObj)
     return response.data
 }
-export default { getAll, addAnecdote }
+
+const addVote = async (id, anecdoteObj) => {
+    const url = baseUrl + `/${id}`
+    const response = await axios.put(url, anecdoteObj)
+    return response.data
+}
+export default { getAll, addAnecdote, addVote }

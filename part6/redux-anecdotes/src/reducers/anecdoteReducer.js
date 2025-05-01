@@ -24,9 +24,10 @@ const reducer = (state = initialState, action) => {
   console.log("action", action);
   switch (action.type) {
     case "ADD_VOTE":
-      return state.map((anecdote) =>
+      const newAnecdotes = state.map((anecdote) =>
         anecdote.id === action.payload.id ? { ...anecdote, votes: anecdote.votes + 1 } : anecdote
       );
+      return newAnecdotes
     case "ADD_ANECDOTE":
       return state.concat(action.payload)
     default:

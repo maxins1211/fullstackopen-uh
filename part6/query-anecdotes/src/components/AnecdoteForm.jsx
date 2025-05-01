@@ -10,20 +10,28 @@ const AnecdoteForm = () => {
     onSuccess: (newAnecdote) => {
       const anecdotes = queryClient.getQueryData(["anecdotes"]);
       queryClient.setQueryData(["anecdotes"], anecdotes.concat(newAnecdote));
+      dispatch({
+        type: "ADD_ANECDOTE",
+        payload: { content: newAnecdote.content },
+      });
+      setTimeout(() => dispatch({ type: "RESET" }), 5000);
+    },
+    onError: (error) => {
+      dispatch({
+        type: "ERROR",
+        payload: {
+          message: error.response.data.error,
+        },
+      });
+      setTimeout(() => dispatch({ type: "RESET" }), 5000);
     },
   });
 
   const onCreate = (event) => {
     event.preventDefault();
     const content = event.target.anecdote.value;
-    if (content.length < 5) {
-      alert("Anecdote must be at least 5 characters long");
-      return;
-    }
     event.target.anecdote.value = "";
     newAnecdoteMutation.mutate({ content, id: getId(), votes: 0 });
-    dispatch({ type: "ADD_ANECDOTE", payload: { content } });
-    setTimeout(() => dispatch({ type: "RESET" }), 5000);
   };
 
   return (

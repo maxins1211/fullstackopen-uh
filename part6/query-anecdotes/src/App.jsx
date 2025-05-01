@@ -10,6 +10,11 @@ const App = () => {
     mutationFn: voteAnecdote,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["anecdotes"] });
+      dispatch({
+        type: "VOTE_ANECDOTE",
+        payload: { content: votedAnecdote.content },
+      });
+      setTimeout(() => dispatch({ type: "RESET" }), 5000);
     },
   });
 
@@ -25,11 +30,6 @@ const App = () => {
       ...votedAnecdote,
       votes: votedAnecdote.votes + 1,
     });
-    dispatch({
-      type: "VOTE_ANECDOTE",
-      payload: { content: votedAnecdote.content },
-    });
-    setTimeout(() => dispatch({ type: "RESET" }), 5000);
   };
   if (isLoading) {
     return <div>Loading data...</div>;

@@ -9,8 +9,11 @@ const notificationSlice = createSlice({
         },
         voteAnecdoteNoti(state, action) {
             return `You voted "${action.payload}"`
+        },
+        removeNoti(state, action) {
+            return ""
         }
     }
 })
-export const { createAnecdoteNoti, voteAnecdoteNoti } = notificationSlice.actions
+export const { createAnecdoteNoti, voteAnecdoteNoti, removeNoti } = notificationSlice.actions
 export default notificationSlice.reducer
